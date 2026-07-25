@@ -493,18 +493,23 @@
     o.start(time); o.stop(time + dur + 0.05);
   }
 
-  function scheduleLoop(){
-    if(!musicOn) return;
-    const now = actx.currentTime + 0.05;
-    let t = now;
-    for(let i=0;i<4;i++){
-      const note = scale[Math.floor(Math.random()*scale.length)];
-      pluckNote(note, t, 1.6, 0.06);
-      if(Math.random() > 0.5) pluckNote(note*2, t+0.4, 1.2, 0.03);
-      t += 1.0 + Math.random()*0.6;
-    }
-    musicTimer = setTimeout(scheduleLoop, (t-now)*1000);
-  }
+function scheduleLoop(){
+   if(!musicOn) return;
+   try {
+     ensureCtx();
+     const now = actx.currentTime + 0.05;
+     let t = now;
+     for(let i=0;i<4;i++){
+       const note = scale[Math.floor(Math.random()*scale.length)];
+       pluckNote(note, t, 1.6, 0.06);
+       if(Math.random() > 0.5) pluckNote(note*2, t+0.4, 1.2, 0.03);
+       t += 1.0 + Math.random()*0.6;
+     }
+   } catch(e) {
+     console.error('ambient music error:', e);
+   }
+   musicTimer = setTimeout(scheduleLoop, 3000);
+ }
 
   function startMusic(){
     ensureCtx();
